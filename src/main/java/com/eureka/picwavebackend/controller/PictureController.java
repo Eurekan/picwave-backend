@@ -17,16 +17,19 @@ import com.eureka.picwavebackend.constant.UserConstant;
 import com.eureka.picwavebackend.exception.BusinessException;
 import com.eureka.picwavebackend.exception.ErrorCode;
 import com.eureka.picwavebackend.exception.ThrowUtils;
+import com.eureka.picwavebackend.manager.auth.SpaceUserAuthManager;
 import com.eureka.picwavebackend.manager.auth.StpKit;
 import com.eureka.picwavebackend.manager.auth.annotation.SaSpaceCheckPermission;
 import com.eureka.picwavebackend.manager.auth.model.SpaceUserPermissionConstant;
 import com.eureka.picwavebackend.model.dto.picture.*;
 import com.eureka.picwavebackend.model.entity.Picture;
 import com.eureka.picwavebackend.model.entity.PictureTagCategory;
+import com.eureka.picwavebackend.model.entity.Space;
 import com.eureka.picwavebackend.model.entity.User;
 import com.eureka.picwavebackend.model.enums.PictureReviewStatusEnum;
 import com.eureka.picwavebackend.model.vo.PictureVO;
 import com.eureka.picwavebackend.service.PictureService;
+import com.eureka.picwavebackend.service.SpaceService;
 import com.eureka.picwavebackend.service.UserService;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
@@ -54,6 +57,8 @@ public class PictureController {
     private final PictureService pictureService;
     private final StringRedisTemplate stringRedisTemplate;
     private final AliYunAiApi aliYunAiApi;
+    private final SpaceUserAuthManager spaceUserAuthManager;
+    private final SpaceService spaceService;
 
     /**
      * 上传图片
@@ -265,7 +270,7 @@ public class PictureController {
      * @return 图片
      */
     @GetMapping("/get/vo")
-    public BaseResponse<PictureVO> getPictureVOById(long id) {
+    public BaseResponse<PictureVO> getPictureVOById(long id, HttpServletRequest request) {
         ThrowUtils.throwIf(id <= 0, ErrorCode.PARAMS_ERROR);
         Picture picture = pictureService.getById(id);
         ThrowUtils.throwIf(picture == null, ErrorCode.NOT_FOUND_ERROR);
@@ -274,12 +279,22 @@ public class PictureController {
 //            User loginUser = userService.getLoginUser(request);
 //            pictureService.checkPictureAuth(loginUser, picture);
 //        }
-        // 校验空间权限，编程式鉴权
-        if (picture.getSpaceId() != null) {
+        // 如果 spaceId 不为空，则为空间图片
+        Space space = null;
+        Long spaceId = picture.getSpaceId();
+        if (spaceId != null) {
+            // 校验空间权限，编程式鉴权
             boolean hasPermission = StpKit.SPACE.hasPermission(SpaceUserPermissionConstant.PICTURE_VIEW);
             ThrowUtils.throwIf(!hasPermission, ErrorCode.NO_AUTH_ERROR);
+            space = spaceService.getById(spaceId);
+            ThrowUtils.throwIf(space == null, ErrorCode.NOT_FOUND_ERROR, "空间不存在");
         }
-        return ResultUtils.success(pictureService.getPictureVO(picture));
+        // 获取权限列表
+        User loginUser = userService.getLoginUser(request);
+        List<String> permissionList = spaceUserAuthManager.getPermissionList(space, loginUser);
+        PictureVO pictureVO = pictureService.getPictureVO(picture);
+        pictureVO.setPermissionList(permissionList);
+        return ResultUtils.success(pictureVO);
     }
 
     /**

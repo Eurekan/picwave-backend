@@ -222,7 +222,7 @@ public class StpInterfaceImpl implements StpInterface {
     }
 
     /**
-     * 从请求中获取上下文对象
+     * 从 http 请求中获取上下文对象
      *
      * @return 上下文对象
      */

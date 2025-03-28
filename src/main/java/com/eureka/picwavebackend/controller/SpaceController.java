@@ -9,6 +9,7 @@ import com.eureka.picwavebackend.constant.UserConstant;
 import com.eureka.picwavebackend.exception.BusinessException;
 import com.eureka.picwavebackend.exception.ErrorCode;
 import com.eureka.picwavebackend.exception.ThrowUtils;
+import com.eureka.picwavebackend.manager.auth.SpaceUserAuthManager;
 import com.eureka.picwavebackend.model.dto.space.*;
 import com.eureka.picwavebackend.model.entity.Space;
 import com.eureka.picwavebackend.model.entity.User;
@@ -35,6 +36,7 @@ public class SpaceController {
 
     private final UserService userService;
     private final SpaceService spaceService;
+    private final SpaceUserAuthManager spaceUserAuthManager;
 
     /**
      * 创建空间
@@ -55,7 +57,7 @@ public class SpaceController {
      * 删除空间
      *
      * @param deleteRequest 删除请求
-     * @param request     请求
+     * @param request       请求
      */
     @PostMapping("/delete")
     public BaseResponse<Boolean> deleteSpace(@RequestBody DeleteRequest deleteRequest, HttpServletRequest request) {
@@ -141,15 +143,21 @@ public class SpaceController {
     /**
      * 根据 id 获取空间（封装类）
      *
-     * @param id 空间 id
+     * @param id      空间 id
+     * @param request http 请求
      * @return 空间
      */
     @GetMapping("/get/vo")
-    public BaseResponse<SpaceVO> getSpaceVOById(long id) {
+    public BaseResponse<SpaceVO> getSpaceVOById(long id, HttpServletRequest request) {
         ThrowUtils.throwIf(id <= 0, ErrorCode.PARAMS_ERROR);
         Space space = spaceService.getById(id);
         ThrowUtils.throwIf(space == null, ErrorCode.NOT_FOUND_ERROR);
-        return ResultUtils.success(spaceService.getSpaceVO(space));
+        // 获取权限列表
+        SpaceVO spaceVO = spaceService.getSpaceVO(space);
+        User loginUser = userService.getLoginUser(request);
+        List<String> permissionList = spaceUserAuthManager.getPermissionList(space, loginUser);
+        spaceVO.setPermissionList(permissionList);
+        return ResultUtils.success(spaceVO);
     }
 
     /**
@@ -183,6 +191,7 @@ public class SpaceController {
         // 查询数据库
         Page<Space> spacePage = spaceService.page(new Page<>(current, pageSize),
                 spaceService.getQueryWrapper(spaceQueryRequest));
+        // 获取权限列表
         return ResultUtils.success(spaceService.getSpaceVOPage(spacePage));
     }
 
