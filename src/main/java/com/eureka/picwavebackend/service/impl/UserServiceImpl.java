@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.eureka.picwavebackend.exception.BusinessException;
 import com.eureka.picwavebackend.exception.ErrorCode;
+import com.eureka.picwavebackend.manager.auth.StpKit;
 import com.eureka.picwavebackend.model.dto.user.UserQueryRequest;
 import com.eureka.picwavebackend.model.entity.User;
 import com.eureka.picwavebackend.model.enums.UserRoleEnum;
@@ -103,6 +104,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         }
         // 3、记录用户的登录态
         request.getSession().setAttribute(USER_LOGIN_STATE, user);
+        // 3、记录用户的登录态到 Sa-Token
+        StpKit.SPACE.login(user.getId());
+        StpKit.SPACE.getSession().set(USER_LOGIN_STATE, user);
         // 4、返回脱敏用户
         return getLoginUserVO(user);
     }
@@ -122,6 +126,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         }
         // 2、移除登录态
         request.getSession().removeAttribute(USER_LOGIN_STATE);
+        // 2、移除 Sa-Token 中的用户登录态
+        StpKit.SPACE.logout(((User) userObj).getId());
         return true;
     }
 
@@ -230,6 +236,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     /**
      * 是否为管理员
+     *
      * @param user 用户
      * @return 是否
      */
