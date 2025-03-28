@@ -6,6 +6,8 @@ import com.eureka.picwavebackend.common.DeleteRequest;
 import com.eureka.picwavebackend.common.ResultUtils;
 import com.eureka.picwavebackend.exception.ErrorCode;
 import com.eureka.picwavebackend.exception.ThrowUtils;
+import com.eureka.picwavebackend.manager.auth.annotation.SaSpaceCheckPermission;
+import com.eureka.picwavebackend.manager.auth.model.SpaceUserPermissionConstant;
 import com.eureka.picwavebackend.model.dto.spaceuser.SpaceUserAddRequest;
 import com.eureka.picwavebackend.model.dto.spaceuser.SpaceUserEditRequest;
 import com.eureka.picwavebackend.model.dto.spaceuser.SpaceUserQueryRequest;
@@ -42,6 +44,7 @@ public class SpaceUserController {
      * @return 新空间成员 id
      */
     @PostMapping("/add")
+    @SaSpaceCheckPermission(value = SpaceUserPermissionConstant.SPACE_USER_MANAGE)
     public BaseResponse<Long> addSpaceUser(@RequestBody SpaceUserAddRequest spaceUserAddRequest,
                                            HttpServletRequest request) {
         // 校验参数
@@ -58,6 +61,7 @@ public class SpaceUserController {
      * @return 是否删除成功
      */
     @PostMapping("/delete")
+    @SaSpaceCheckPermission(value = SpaceUserPermissionConstant.SPACE_USER_MANAGE)
     public BaseResponse<Boolean> deleteSpaceUser(@RequestBody DeleteRequest deleteRequest,
                                                  HttpServletRequest request) {
         // 校验参数
@@ -80,6 +84,7 @@ public class SpaceUserController {
      * @return 是否编辑成功
      */
     @PostMapping("/edit")
+    @SaSpaceCheckPermission(value = SpaceUserPermissionConstant.SPACE_USER_MANAGE)
     public BaseResponse<Boolean> editSpaceUser(@RequestBody SpaceUserEditRequest spaceUserEditRequest,
                                                HttpServletRequest request) {
         // 校验参数
@@ -107,6 +112,7 @@ public class SpaceUserController {
      * @return 空间成员信息
      */
     @PostMapping("/get")
+    @SaSpaceCheckPermission(value = SpaceUserPermissionConstant.SPACE_USER_MANAGE)
     public BaseResponse<SpaceUser> getSpaceUser(@RequestBody SpaceUserQueryRequest spaceUserQueryRequest,
                                                 HttpServletRequest request) {
         // 校验参数
@@ -128,6 +134,7 @@ public class SpaceUserController {
      * @return 空间成员信息列表
      */
     @PostMapping("/list")
+    @SaSpaceCheckPermission(value = SpaceUserPermissionConstant.SPACE_USER_MANAGE)
     public BaseResponse<List<SpaceUserVO>> getSpaceUserVOList(@RequestBody SpaceUserQueryRequest spaceUserQueryRequest,
                                                               HttpServletRequest request) {
         // 校验参数
