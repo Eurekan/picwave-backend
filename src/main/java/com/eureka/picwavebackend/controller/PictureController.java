@@ -23,12 +23,10 @@ import com.eureka.picwavebackend.manager.auth.model.SpaceUserPermissionConstant;
 import com.eureka.picwavebackend.model.dto.picture.*;
 import com.eureka.picwavebackend.model.entity.Picture;
 import com.eureka.picwavebackend.model.entity.PictureTagCategory;
-import com.eureka.picwavebackend.model.entity.Space;
 import com.eureka.picwavebackend.model.entity.User;
 import com.eureka.picwavebackend.model.enums.PictureReviewStatusEnum;
 import com.eureka.picwavebackend.model.vo.PictureVO;
 import com.eureka.picwavebackend.service.PictureService;
-import com.eureka.picwavebackend.service.SpaceService;
 import com.eureka.picwavebackend.service.UserService;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
@@ -44,7 +42,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -56,7 +53,6 @@ public class PictureController {
     private final UserService userService;
     private final PictureService pictureService;
     private final StringRedisTemplate stringRedisTemplate;
-    private final SpaceService spaceService;
     private final AliYunAiApi aliYunAiApi;
 
     /**
@@ -269,7 +265,7 @@ public class PictureController {
      * @return 图片
      */
     @GetMapping("/get/vo")
-    public BaseResponse<PictureVO> getPictureVOById(long id, HttpServletRequest request) {
+    public BaseResponse<PictureVO> getPictureVOById(long id) {
         ThrowUtils.throwIf(id <= 0, ErrorCode.PARAMS_ERROR);
         Picture picture = pictureService.getById(id);
         ThrowUtils.throwIf(picture == null, ErrorCode.NOT_FOUND_ERROR);
@@ -309,8 +305,7 @@ public class PictureController {
      * @return 分页对象
      */
     @PostMapping("/list/page/vo")
-    public BaseResponse<Page<PictureVO>> getPictureVOListByPage(@RequestBody PictureQueryRequest pictureQueryRequest,
-                                                                HttpServletRequest request) {
+    public BaseResponse<Page<PictureVO>> getPictureVOListByPage(@RequestBody PictureQueryRequest pictureQueryRequest) {
         int current = pictureQueryRequest.getCurrent();
         int pageSize = pictureQueryRequest.getPageSize();
         // 限制爬虫
