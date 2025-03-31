@@ -42,7 +42,9 @@ public class PictureEditEventWorkHandler implements WorkHandler<PictureEditEvent
         WebSocketSession session = pictureEditEvent.getSession();
         User user = pictureEditEvent.getUser();
         Long pictureId = pictureEditEvent.getPictureId();
-        PictureEditMessageTypeEnum pictureEditMessageTypeEnum = PictureEditMessageTypeEnum.getEnumByValue(pictureEditRequestMessage.getType());
+        // 获取消息类型
+        String type = pictureEditRequestMessage.getType();
+        PictureEditMessageTypeEnum pictureEditMessageTypeEnum = PictureEditMessageTypeEnum.valueOf(type);
 
         // 2、调用对应消息处理方法
         switch (pictureEditMessageTypeEnum) {
