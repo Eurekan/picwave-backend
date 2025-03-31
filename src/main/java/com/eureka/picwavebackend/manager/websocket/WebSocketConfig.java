@@ -1,7 +1,5 @@
-package com.eureka.picwavebackend.config;
+package com.eureka.picwavebackend.manager.websocket;
 
-import com.eureka.picwavebackend.manager.websocket.PictureEditHandler;
-import com.eureka.picwavebackend.manager.websocket.WsHandshakeInterceptor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;

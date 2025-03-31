@@ -1,8 +1,6 @@
-package com.eureka.picwavebackend.config;
+package com.eureka.picwavebackend.manager.websocket.disruptor;
 
 import cn.hutool.core.thread.ThreadFactoryBuilder;
-import com.eureka.picwavebackend.manager.websocket.disruptor.PictureEditEvent;
-import com.eureka.picwavebackend.manager.websocket.disruptor.PictureEditEventWorkHandler;
 import com.lmax.disruptor.dsl.Disruptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

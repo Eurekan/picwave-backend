@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketSession;
 
+import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 
 /**
@@ -50,6 +51,7 @@ public class PictureEditEventProducer {
     /**
      * 关闭 disruptor（优雅停机）
      */
+    @PreDestroy
     public void close() {
         pictureEditEventDisruptor.shutdown();
     }
