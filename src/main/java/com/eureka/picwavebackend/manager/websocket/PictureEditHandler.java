@@ -189,7 +189,7 @@ public class PictureEditHandler extends TextWebSocketHandler {
     }
 
     /**
-     * 处理编辑动作消息
+     * 处理编辑操作消息
      *
      * @param pictureEditRequestMessage 图片编辑请求消息
      * @param session                   会话

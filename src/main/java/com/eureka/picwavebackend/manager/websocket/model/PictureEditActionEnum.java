@@ -3,7 +3,7 @@ package com.eureka.picwavebackend.manager.websocket.model;
 import lombok.Getter;
 
 /**
- * 图片编辑类型枚举
+ * 图片编辑操作类型枚举
  */
 @Getter
 public enum PictureEditActionEnum {
