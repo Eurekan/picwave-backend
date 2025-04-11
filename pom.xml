@@ -188,7 +188,6 @@
                 <version>${spring-boot.version}</version>
                 <configuration>
                     <mainClass>com.eureka.picwavebackend.PicwaveBackendApplication</mainClass>
-                    <skip>true</skip>
                 </configuration>
                 <executions>
                     <execution>
