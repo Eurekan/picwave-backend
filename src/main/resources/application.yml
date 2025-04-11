@@ -39,7 +39,6 @@ server:
     session:
       cookie:
         max-age: 2592000
-        domain: picwave.com
 # Mybatis-Plus 配置
 mybatis-plus:
   configuration:
