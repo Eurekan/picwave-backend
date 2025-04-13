@@ -271,7 +271,7 @@ public class SpaceServiceImpl extends ServiceImpl<SpaceMapper, Space>
     public void checkSpaceAuth(Space space, User loginUser) {
         ThrowUtils.throwIf(loginUser == null, ErrorCode.NOT_LOGIN_ERROR, "用户未登录");
         ThrowUtils.throwIf(space == null, ErrorCode.NOT_FOUND_ERROR, "空间不存在");
-        ThrowUtils.throwIf(!loginUser.getId().equals(space.getUserId()) || !userService.isAdmin(loginUser),
+        ThrowUtils.throwIf(!userService.isAdmin(loginUser) && !space.getUserId().equals(loginUser.getId()),
                 ErrorCode.NO_AUTH_ERROR, "没有空间访问权限");
     }
 

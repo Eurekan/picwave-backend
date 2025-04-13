@@ -46,7 +46,8 @@ public class SpaceAnalyzeServiceImpl implements SpaceAnalyzeService {
         }
         if (Objects.nonNull(spaceAnalyzeRequest.getSpaceId()) && spaceAnalyzeRequest.getSpaceId() > 0L) {
             Space space = spaceService.getById(spaceAnalyzeRequest.getSpaceId());
-            ThrowUtils.throwIf(!userService.isAdmin(loginUser) || !space.getUserId().equals(loginUser.getId()), ErrorCode.NO_AUTH_ERROR, "无权限查询指定空间");
+            ThrowUtils.throwIf(!userService.isAdmin(loginUser) && !space.getUserId().equals(loginUser.getId()),
+                    ErrorCode.NO_AUTH_ERROR, "无权限查询指定空间");
         }
     }
 
