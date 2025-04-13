@@ -35,8 +35,8 @@ server:
   port: 8123
   servlet:
     context-path: /api
-    # Cookie 30 天过期
     session:
+      timeout: 2592000
       cookie:
         domain: picwave.top
         max-age: 2592000
