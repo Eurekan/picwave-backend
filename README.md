@@ -57,7 +57,6 @@
 * Redis 分布式缓存 + Caffeine 本地缓存
 * Jsoup 数据抓取
 * ⭐️ COS 对象存储
-* ⭐️ ShardingSphere 分库分表
 * ⭐️ Sa-Token 权限控制
 * ⭐️ DDD 领域驱动设计
 * ⭐️ WebSocket 双向通信
