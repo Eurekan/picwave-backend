@@ -18,6 +18,7 @@ import com.eureka.picwavebackend.exception.BusinessException;
 import com.eureka.picwavebackend.exception.ErrorCode;
 import com.eureka.picwavebackend.exception.ThrowUtils;
 import com.eureka.picwavebackend.manager.CosManager;
+import com.eureka.picwavebackend.manager.dingding.CustomRobot;
 import com.eureka.picwavebackend.manager.upload.FilePictureUpload;
 import com.eureka.picwavebackend.manager.upload.PictureUploadTemplate;
 import com.eureka.picwavebackend.manager.upload.UrlPictureUpload;
@@ -67,6 +68,7 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture>
     private final SpaceService spaceService;
     private final TransactionTemplate transactionTemplate;
     private final AliYunAiApi aliYunAiApi;
+    private final CustomRobot customRobot;
 
     /**
      * 上传图片
@@ -182,6 +184,10 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture>
             }
             return picture;
         });
+        // 如果图片为待审核状态，发送钉钉消息
+        if (picture.getReviewStatus() != null && PictureReviewStatusEnum.REVIEWING.getValue() == picture.getReviewStatus()) {
+            customRobot.sendPictureReviewMessage(picture);
+        }
         return PictureVO.objToVo(picture);
     }
 
